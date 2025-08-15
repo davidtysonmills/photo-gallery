@@ -1,0 +1,177 @@
+// Sample photo data with categories and alt text
+const photos = [
+  {
+    id: 1,
+    src: "1.jpg",
+    alt: "Empty meeting room with white walls, folding chairs, and framed pictures.",
+    category: "Interior Design",
+  },
+  {
+    id: 2,
+    src: "2.jpg",
+    alt: "Meeting room with white table, chairs, and a door to a waiting area.",
+    category: "Furniture",
+  },
+  {
+    id: 3,
+    src: "3.jpg",
+    alt: "Compact kitchen with microwave, sink, and refrigerator.",
+    category: "Interior Design",
+  },
+  {
+    id: 4,
+    src: "4.jpg",
+    alt: "Waiting area with glass table, patterned chairs, and a framed picture.",
+    category: "Interior Design",
+  },
+  {
+    id: 5,
+    src: "5.jpg",
+    alt: "Office reception with glass table, chairs, and large windows.",
+    category: "Furniture",
+  },
+  {
+    id: 6,
+    src: "6.jpg",
+    alt: "Meeting room with white table, chairs, and large windows.",
+    category: "Interior Design",
+  },
+  {
+    id: 7,
+    src: "7.jpg",
+    alt: "Conference room with white table, chairs, and windows.",
+    category: "Interior Design",
+  },
+  {
+    id: 8,
+    src: "8.jpg",
+    alt: "Small meeting room with white table, chairs, and a mirror with vases.",
+    category: "Interior Design",
+  },
+  {
+    id: 9,
+    src: "9.jpg",
+    alt: "Conference room with white table, chairs, and large windows overlooking a parking lot.",
+    category: "Interior Design",
+  },
+]
+
+// State variables
+let searchTerm = ""
+let activeFilter = "All"
+let selectedImage = null
+
+// DOM elements
+const searchInput = document.getElementById("searchInput")
+const photoGrid = document.getElementById("photoGrid")
+const noResults = document.getElementById("noResults")
+const modal = document.getElementById("modal")
+const modalOverlay = document.getElementById("modalOverlay")
+const modalClose = document.getElementById("modalClose")
+const modalImage = document.getElementById("modalImage")
+const modalCategory = document.getElementById("modalCategory")
+const modalDescription = document.getElementById("modalDescription")
+
+// Filter photos based on search term and category
+function getFilteredPhotos() {
+  return photos.filter((photo) => {
+    const matchesSearch = photo.alt.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesFilter = activeFilter === "All" || photo.category === activeFilter
+    return matchesSearch && matchesFilter
+  })
+}
+
+// Render photo grid
+function renderPhotoGrid() {
+  const filteredPhotos = getFilteredPhotos()
+
+  if (filteredPhotos.length === 0) {
+    photoGrid.innerHTML = ""
+    noResults.classList.remove("hidden")
+    return
+  }
+
+  noResults.classList.add("hidden")
+
+  photoGrid.innerHTML = filteredPhotos
+    .map(
+      (photo) => `
+        <div class="photo-item" data-photo-id="${photo.id}">
+            <img src="${photo.src}" alt="${photo.alt}" loading="lazy">
+            <div class="photo-overlay"></div>
+        </div>
+    `,
+    )
+    .join("")
+
+  // Add click listeners to photo items
+  document.querySelectorAll(".photo-item").forEach((item) => {
+    item.addEventListener("click", () => {
+      const photoId = Number.parseInt(item.dataset.photoId)
+      const photo = photos.find((p) => p.id === photoId)
+      openModal(photo)
+    })
+  })
+}
+
+// Open modal with selected image
+function openModal(photo) {
+  selectedImage = photo
+  modalImage.src = photo.src
+  modalImage.alt = photo.alt
+  modalCategory.textContent = photo.category
+  modalDescription.textContent = photo.alt
+
+  modal.classList.remove("hidden")
+  modal.classList.add("show")
+  document.body.style.overflow = "hidden"
+}
+
+// Close modal
+function closeModal() {
+  modal.classList.remove("show")
+  document.body.style.overflow = "auto"
+}
+
+// Initialize the application
+function init() {
+  // Render initial photo grid
+  renderPhotoGrid()
+
+  // Search input event listener
+  searchInput.addEventListener("input", (e) => {
+    searchTerm = e.target.value
+    renderPhotoGrid()
+  })
+
+  // Filter button event listeners
+  document.querySelectorAll(".filter-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      // Remove active class from all buttons
+      document.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"))
+
+      // Add active class to clicked button
+      btn.classList.add("active")
+
+      // Update active filter
+      activeFilter = btn.dataset.filter
+
+      // Re-render grid
+      renderPhotoGrid()
+    })
+  })
+
+  // Modal event listeners
+  modalClose.addEventListener("click", closeModal)
+  modalOverlay.addEventListener("click", closeModal)
+
+  // Close modal on Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+      closeModal()
+    }
+  })
+}
+
+// Start the application when DOM is loaded
+document.addEventListener("DOMContentLoaded", init)
