@@ -3,56 +3,72 @@ const photos = [
   {
     id: 1,
     src: "1.jpg",
-    alt: "Empty meeting room with white walls, folding chairs, and framed pictures.",
+    alt: "Modern living room with blue sofa and minimalist decor",
     category: "Interior Design",
+    type: "image",
   },
   {
     id: 2,
     src: "2.jpg",
-    alt: "Meeting room with white table, chairs, and a door to a waiting area.",
+    alt: "Dark green circular coffee table in contemporary setting",
     category: "Furniture",
+    type: "image",
   },
   {
     id: 3,
     src: "3.jpg",
-    alt: "Compact kitchen with microwave, sink, and refrigerator.",
+    alt: "Bright living room with white fireplace and modern furniture",
     category: "Interior Design",
+    type: "image",
   },
   {
     id: 4,
     src: "4.jpg",
-    alt: "Waiting area with glass table, patterned chairs, and a framed picture.",
+    alt: "White modern kitchen with clean lines and minimal design",
     category: "Interior Design",
+    type: "image",
   },
   {
     id: 5,
     src: "5.jpg",
-    alt: "Office reception with glass table, chairs, and large windows.",
+    alt: "Wooden dining table with modern chairs and decor",
     category: "Furniture",
+    type: "image",
   },
   {
     id: 6,
     src: "6.jpg",
-    alt: "Meeting room with white table, chairs, and large windows.",
+    alt: "Long hallway with modern lighting and clean architecture",
     category: "Interior Design",
+    type: "image",
   },
   {
     id: 7,
     src: "7.jpg",
-    alt: "Conference room with white table, chairs, and windows.",
+    alt: "Cozy living room with warm lighting and comfortable seating",
     category: "Interior Design",
+    type: "image",
   },
   {
     id: 8,
     src: "8.jpg",
-    alt: "Small meeting room with white table, chairs, and a mirror with vases.",
+    alt: "Elegant dining room with modern chandelier and sophisticated decor",
     category: "Interior Design",
+    type: "image",
   },
   {
     id: 9,
     src: "9.jpg",
-    alt: "Conference room with white table, chairs, and large windows overlooking a parking lot.",
+    alt: "Open concept kitchen and living space with neutral tones",
     category: "Interior Design",
+    type: "image",
+  },
+  {
+    id: 10,
+    src: "1.mp4",
+    alt: "Interior design showcase video with modern furniture and decor",
+    category: "Video",
+    type: "video",
   },
 ]
 
@@ -69,6 +85,7 @@ const modal = document.getElementById("modal")
 const modalOverlay = document.getElementById("modalOverlay")
 const modalClose = document.getElementById("modalClose")
 const modalImage = document.getElementById("modalImage")
+const modalVideo = document.getElementById("modalVideo")
 const modalCategory = document.getElementById("modalCategory")
 const modalDescription = document.getElementById("modalDescription")
 
@@ -94,14 +111,25 @@ function renderPhotoGrid() {
   noResults.classList.add("hidden")
 
   photoGrid.innerHTML = filteredPhotos
-    .map(
-      (photo) => `
-        <div class="photo-item" data-photo-id="${photo.id}">
-            <img src="${photo.src}" alt="${photo.alt}" loading="lazy">
-            <div class="photo-overlay"></div>
-        </div>
-    `,
-    )
+    .map((photo) => {
+      if (photo.type === "video") {
+        return `
+          <div class="photo-item" data-photo-id="${photo.id}">
+              <img src="video-thumbnail.png" alt="${photo.alt}" loading="lazy">
+              <div class="video-overlay">
+                  <div class="video-play-button"></div>
+              </div>
+          </div>
+        `
+      } else {
+        return `
+          <div class="photo-item" data-photo-id="${photo.id}">
+              <img src="${photo.src}" alt="${photo.alt}" loading="lazy">
+              <div class="photo-overlay"></div>
+          </div>
+        `
+      }
+    })
     .join("")
 
   // Add click listeners to photo items
@@ -117,8 +145,19 @@ function renderPhotoGrid() {
 // Open modal with selected image
 function openModal(photo) {
   selectedImage = photo
-  modalImage.src = photo.src
-  modalImage.alt = photo.alt
+
+  if (photo.type === "video") {
+    modalImage.classList.add("hidden")
+    modalVideo.classList.remove("hidden")
+    modalVideo.src = photo.src
+    modalVideo.load()
+  } else {
+    modalVideo.classList.add("hidden")
+    modalImage.classList.remove("hidden")
+    modalImage.src = photo.src
+    modalImage.alt = photo.alt
+  }
+
   modalCategory.textContent = photo.category
   modalDescription.textContent = photo.alt
 
@@ -131,6 +170,11 @@ function openModal(photo) {
 function closeModal() {
   modal.classList.remove("show")
   document.body.style.overflow = "auto"
+
+  // Pause video if it's playing
+  if (!modalVideo.classList.contains("hidden")) {
+    modalVideo.pause()
+  }
 }
 
 // Initialize the application

@@ -239,6 +239,55 @@ body {
   background-color: rgba(0, 0, 0, 0.2);
 }
 
+/* Video styles for modal */
+.modal-video {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  display: block;
+}
+
+/* Video thumbnail overlay styles */
+.video-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.video-play-button {
+  width: 4rem;
+  height: 4rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.video-play-button::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 1rem solid #0f172a;
+  border-top: 0.6rem solid transparent;
+  border-bottom: 0.6rem solid transparent;
+  margin-left: 0.2rem;
+}
+
+.photo-item:hover .video-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.photo-item:hover .video-play-button {
+  background-color: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+}
+
 /* No results */
 .no-results {
   text-align: center;
