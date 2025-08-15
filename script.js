@@ -115,7 +115,7 @@ function renderPhotoGrid() {
       if (photo.type === "video") {
         return `
           <div class="photo-item" data-photo-id="${photo.id}">
-              <img src="public/video-thumbnail.png" alt="${photo.alt}" loading="lazy">
+              <img src="video-thumbnail.png" alt="${photo.alt}" loading="lazy">
               <div class="video-overlay">
                   <div class="video-play-button"></div>
               </div>
