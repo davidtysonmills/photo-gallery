@@ -93,7 +93,7 @@ const modalDescription = document.getElementById("modalDescription")
 function getFilteredPhotos() {
   return photos.filter((photo) => {
     const matchesSearch = photo.alt.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesFilter = activeFilter === "All" || photo.category === activeFilter
+    const matchesFilter = activeFilter === "All" ? photo.type !== "video" : photo.category === activeFilter
     return matchesSearch && matchesFilter
   })
 }
@@ -115,7 +115,7 @@ function renderPhotoGrid() {
       if (photo.type === "video") {
         return `
           <div class="photo-item" data-photo-id="${photo.id}">
-              <img src="video-thumbnail.png" alt="${photo.alt}" loading="lazy">
+              <img src="public/video-thumbnail.png" alt="${photo.alt}" loading="lazy">
               <div class="video-overlay">
                   <div class="video-play-button"></div>
               </div>
